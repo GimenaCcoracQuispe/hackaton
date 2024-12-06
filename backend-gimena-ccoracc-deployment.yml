@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: content-attendance
-  namespace: gimena
+  namespace: gimena-ccoracc
 spec:
   replicas: 1
   selector:
@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: content-attendance
-        image: gimenac/attendance:2.0   # Reemplaza con tu imagen Docker
+        image: gimenac/attendance:1.0   # Reemplaza con tu imagen Docker
         ports:
         - containerPort: 8080
         env:
