@@ -1,6 +1,5 @@
 package pe.edu.vallegrande.api_reniec.rest;
 
-import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import pe.edu.vallegrande.api_reniec.model.Dni;
@@ -16,8 +15,14 @@ public class DniRest {
     public DniRest(DniService service) {
         this.service = service;
     }
+
     @GetMapping
     public Flux<Dni> getAllIpQueries() {
+        return service.getAll();
+    }
+
+    @GetMapping("/all")
+    public Flux<Dni> getAllDniRecords() {
         return service.getAll();
     }
 
@@ -37,7 +42,7 @@ public class DniRest {
     }
 
     @PutMapping("/update/{id}")
-    public Mono<String> updateDni(@PathVariable Long id, @RequestParam String dni) {
+    public Mono<Dni> updateDni(@PathVariable Long id, @RequestParam String dni) {
         return service.updateDni(id, dni);
     }
 

@@ -71,11 +71,12 @@ public class DniService {
                 .doOnError(e -> log.error("Error while fetching DNI info", e));
     }
 
-    public Mono<String> updateDni(Long id, String dni) {
+    public Mono<Dni> updateDni(Long id, String dni) {
         return repository.findById(id)
                 .flatMap(existingDni -> {
                     if (existingDni == null) {
-                        return Mono.just("DNI no encontrado.");
+                        // Si no se encuentra el DNI, devuelve un Mono vacío o un error, en lugar de un mensaje de texto.
+                        return Mono.error(new RuntimeException("DNI no encontrado."));
                     }
 
                     String url = "/dni/" + dni + "?token=" + token;
@@ -89,24 +90,27 @@ public class DniService {
                                 JSONObject json = new JSONObject(responseBody);
 
                                 if (json.getBoolean("success")) {
+                                    // Si el DNI es válido, actualiza los datos del objeto existingDni.
                                     existingDni.setDni(json.getString("dni"));
                                     existingDni.setNombres(json.getString("nombres"));
                                     existingDni.setApellidoPaterno(json.getString("apellidoPaterno"));
                                     existingDni.setApellidoMaterno(json.getString("apellidoMaterno"));
                                     existingDni.setCodVerifica(json.getString("codVerifica"));
 
+                                    // Guarda los cambios y devuelve el objeto Dni actualizado.
                                     return repository.save(existingDni)
-                                            .then(Mono.just("DNI actualizado con éxito: " + existingDni.getDni()));
+                                            .flatMap(updatedDni -> Mono.just(updatedDni));
                                 } else {
-                                    return Mono.just("DNI no válido.");
+                                    // Si el DNI no es válido, lanza un error con un mensaje adecuado.
+                                    return Mono.error(new RuntimeException("DNI no válido."));
                                 }
                             })
                             .onErrorResume(error -> {
-                                error.printStackTrace();
-                                return Mono.just("Error al consultar el servicio externo.");
+                                // Maneja cualquier error en la llamada externa y lo transforma en un Mono de error.
+                                return Mono.error(new RuntimeException("Error al consultar el servicio externo.", error));
                             });
                 })
-                .switchIfEmpty(Mono.just("DNI no encontrado."));
+                .switchIfEmpty(Mono.error(new RuntimeException("DNI no encontrado.")));
     }
 
     // Método para obtener todos los DNIs con un estado específico
