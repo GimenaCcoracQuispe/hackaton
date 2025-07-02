@@ -1,13 +1,13 @@
-package pe.edu.vallegrande.api_reniec;
+package pe.edu.vallegrande.hackathon;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ApiReniecApplication {
+public class HackathonApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ApiReniecApplication.class, args);
+		SpringApplication.run(HackathonApplication.class, args);
 	}
 
 }
