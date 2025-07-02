@@ -1,4 +1,4 @@
-package main.java.pe.edu.vallegrande.hackathon.model;
+package pe.edu.vallegrande.hackathon.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
